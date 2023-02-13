@@ -16,10 +16,14 @@ image_links = [link.get("href") for link in soup.find_all("a") if link.get("href
 if not os.path.exists("images"):
     os.makedirs("images")
 
-# download each image and save it to the images directory
+# download each image that has not already been downloaded
 for link in image_links:
     image_url = base_url + link
-    response = requests.get(image_url)
-    with open(f"images/{link}", "wb") as f:
-        f.write(response.content)
-        print(f"Downloaded {link}")
+    file_path = f"images/{link}"
+    if not os.path.exists(file_path):
+        response = requests.get(image_url)
+        with open(file_path, "wb") as f:
+            f.write(response.content)
+            print(f"Downloaded {link}")
+    else:
+        print(f"File {link} already exists, skipping download.")
